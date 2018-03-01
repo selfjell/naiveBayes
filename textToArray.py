@@ -14,7 +14,6 @@ def filesToArray(label):
     return text
 postext = filesToArray("pos")
 negtext = filesToArray("neg")
-#alltext = negtext.extend(postext)
 
 superstring = "".join([string for string in postext]).lower()
 poscunt = Counter(superstring.split())
@@ -26,5 +25,10 @@ print('POSITIVE: ')
 print(poscunt.most_common(20))
 print('NEGATIVE: ')
 print(negcunt.most_common(20))
-#print('ALL')
-#print(allcunt.most_common(20))
+alltext = negtext
+for s in postext:
+    alltext.append(s)
+superstring = "".join([string for string in alltext]).lower()
+allcunt = Counter(superstring.split())
+print('ALL')
+print(allcunt.most_common(20))

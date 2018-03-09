@@ -3,6 +3,16 @@ import numpy as np
 import os
 import csv
 
+def isEndOfSentence(word):
+    if word[-1:] == "." or word[-1:] == "!" or word[-1:] == "?" or word[-1:] == "," or word[-1:] == "\"":
+        return True
+    return False
+
+def isNegationWord(word):
+    if word == "not" or word[-3:] == "n't" or word == "no" or word == "never":
+        return True
+    return False
+
 # Cleans a list of String-reviews to lower(), no duplicate words, and negation fix for sentiment analysis
 # Argument input_text = A list of String-reviews
 # Return input_text = The cleaned up list for sentiment analysis
@@ -15,15 +25,15 @@ def clean_text(input_text):
 
         # Convert the the review in the form of a String into a list of words and removes the duplicate words
         words = []
-        [words.append(x) for x in input_text[i].split(" ")] 
+        [words.append(x) for x in input_text[i].split(" ")]
 
         # Ads NOT_ in front of the words following a negation operator: "not", "n't", "no" and "never"
         negation_word = ""
         for j in range(len(words)):
             words[j] = negation_word + words[j]
-            if words[j] == "not" or words[j][-3:] == "n't" or words[j] == "no" or words[j] == "never":
+            if isNegationWord(words[j]):
                 negation_word = "NOT_"
-            if words[j][-1:] == "." or words[j][-1:] == "!" or words[j][-1:] == "?" or words[j][-1:] == "," or words[j][-1:] == "\"":
+            if isEndOfSentence(words[j]):
                 words[j] = words[j].replace(words[j][-1], "")
                 negation_word = ""
 

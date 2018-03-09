@@ -15,7 +15,7 @@ def clean_text(input_text):
 
         # Convert the the review in the form of a String into a list of words and removes the duplicate words
         words = []
-        [words.append(x) for x in input_text[i].split(" ")] #if x not in words #should duplicates be removed?
+        [words.append(x) for x in input_text[i].split(" ")] 
 
         # Ads NOT_ in front of the words following a negation operator: "not", "n't", "no" and "never"
         negation_word = ""
@@ -40,7 +40,6 @@ def txtToList(path):
             p = os.path.join(path, file)
             with open(p, "r",encoding="utf8") as f:
                 text = f.read()
-                 #.replace("\n"," ").replace("<br />"," ")
                 _list.append(text)
     return _list
 

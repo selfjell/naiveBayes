@@ -10,59 +10,71 @@ def isEndOfSentence(word):
     return False
 
 def isNegationWord(word):
-    if word == "not" or word.endswith("n't") or word == "no" or word == "never":
+    if word.endswith("not") or word.endswith("n't") or word == "no" or word == "never":
         return True
     return False
 
-def isStopWord(word, list):
+def is_in_list(word, list):
     if word in list:
         return True
     return False
 
-def getStopWordList(path):
+def getList(path):
     _input = []
     with open (path, 'r', errors="ignore", encoding='utf-8') as f:
         _input = f.read().splitlines()
-        print(_input)
+        #print(_input)
     return _input
 
 # Cleans a list of String-reviews to lower(), no duplicate words, and negation fix for sentiment analysis
 # Argument input_text = A list of String-reviews
 # Return input_text = The cleaned up list for sentiment analysis
-def clean_text(input_text, stopList):
-    for i in range(len(input_text)):
-        if i == 1:
-            print(input_text[i])
+stop_list = getList('./stopwords.txt')
+neg_stop = getList('./neg_stopwords.txt')
+def clean_text(input_text, stop_words = stop_list, neg_stop = neg_stop):
 
-        # String to lowercase letters and removes the <br /> thing
-        input_text[i] = input_text[i].lower().replace("\n", " ").replace("<br />", " ").replace(")", " ")
-        input_text[i] = input_text[i].replace("  ", " ").replace("(", "").replace("{", "")
-        input_text[i] = input_text[i].replace("}", "")
+    # String to lowercase letters and removes the <br /> thing
+    input_text = input_text                         \
+                    .lower().replace("\n", " ")     \
+                    .replace("<br />", " ")         \
+                    .replace(")", " ")              \
+                    .replace("  ", " ")             \
+                    .replace("(", "")               \
+                    .replace("{", "")               \
+                    .replace("}", "")
 
-        # Convert the the review in the form of a String into a list of words and removes the duplicate words
-        words = []
-        [words.append(x) for x in input_text[i].split(" ")]
+    # Convert the the review in the form of a String into a list of words
+    words = []
+    [words.append(x) for x in input_text.split(" ")]
 
-        # Ads NOT_ in front of the words following a negation operator: "not", "n't", "no" and "never"
-        negation_word = ""
-        for j in range(len(words)):
-            words[j] = negation_word + words[j]
-            if isNegationWord(words[j]):
-                negation_word = "NOT_"
-            if isEndOfSentence(words[j]):
-                words[j] = words[j].replace(words[j][-1], "")
-                negation_word = ""
+    #Removing stopwords
+    words = [word for word in words if not word in stop_words]
 
-        for word in words:
-            if isStopWord(word,stopList):
-                words.remove(word)
 
-        # Joins the list "words" back into String-format and puts it back into its place
-        input_text[i] = ' '.join(words)
-        input_text[i].replace(".", "").replace(",", "").replace("!","").replace("?","").replace("\"", "").replace("\'", "")
-        if i == 1:
-            print("--------------------------")
-            print(input_text[i])
+    # Ads NOT_ in front of the words following a negation operator: "not", "n't", "no" and "never"
+    negation_word = ""
+    for j in range(len(words)):
+        words[j] = negation_word + words[j]
+        if isNegationWord(words[j]):
+            negation_word = "NOT_"
+        if isEndOfSentence(words[j]):
+            words[j] = words[j].replace(words[j][-1], "")
+            negation_word = ""
+
+    #Removing negated stopwords
+    words = [word for word in words if not word in neg_stop]
+
+
+    # Joins the list "words" back into String-format and puts it back into its place
+    input_text = ' '.join(words)
+    input_text = input_text \
+        .replace(".", "")   \
+        .replace(",", "")   \
+        .replace("!","")    \
+        .replace("?","")    \
+        .replace("\"", "")  \
+        .replace("\'", "")  \
+        .replace(":","")
 
     # Returns a list of Strings with all the changes made
     return input_text
@@ -77,21 +89,6 @@ def txtToList(path):
                 _list.append(text)
     return _list
 
-# Writes the processed words as a dictionary to file
-def ratiosToFile(ratios):
-    with open ('ratios.csv', 'w', newline='') as f:
-        w = csv.writer(f, delimiter=':')
-        w.writerows(ratios.items())
-
-# Loads the processed dictionary from a csv-file
-def loadTraining(filePath):
-    _input = Counter()
-    with open (filePath, 'r', errors="ignore", encoding='utf-8') as f:
-        r = csv.reader(f, delimiter=':')
-        for row in r:
-            _input[row[0]] = float(row[1])
-    return _input
-
 
 #Making list of .txt-files (per sentiment)
 tp_reviews = txtToList("./Data/test/pos")
@@ -100,10 +97,12 @@ pos_reviews = txtToList("./Data/train/pos")
 neg_reviews = txtToList("./Data/train/neg")
 
 #Cleaning reviews
-stopList = getStopWordList('./stopwords.txt')
-pos_reviews, neg_reviews = clean_text(pos_reviews,stopList), clean_text(neg_reviews,stopList)
-tp_reviews, tn_reviews = clean_text(tp_reviews,stopList), clean_text(tn_reviews,stopList)
-
+print(neg_reviews[5])
+reviews = [pos_reviews, neg_reviews, tp_reviews, tn_reviews]
+for list_ in reviews:
+    for i, review in enumerate(list_):
+        list_[i] = clean_text(review)
+print(neg_reviews[5])
 #Joining the reviews into one string (per sentiment)
 pos_string= "".join([string for string in pos_reviews])
 neg_string = "".join([string for string in neg_reviews])
@@ -131,25 +130,45 @@ classifier = Bayes(posCounter, negCounter, vocabCounter)
 classifier.train()
 
 testSets = [tp_reviews, tn_reviews]
+n_pos_tp, n_neg_tp = 0, 0
+n_pos_tn, n_neg_tn = 0, 0
 
 for i, testSet in enumerate(testSets):
-    print()
+    print("_"*15 + "RESULTS" + "_"*15)
     n_pos, n_neg = 0, 0
-    if(i==0):
-        print("Positive Testset: ")
-    else:
-        print("Negative Testset: ")
 
     for review in testSet:
         pos, neg = classifier.test(review)
-        if(pos > neg):
+        if(pos >= neg):
             n_pos+=1
         else:
             n_neg+=1
+
+    if(i==0):
+        print("Positive Testset: ")
+        n_pos_tp, n_neg_tp = n_pos, n_neg
+    else:
+        print("Negative Testset: ")
+        n_pos_tn, n_neg_tn = n_pos, n_neg
+
     print("Positive reviews: {}".format(n_pos))
     print("Negative reviews: {}".format(n_neg))
-    if(i==0):
-        print("Correct: {}%".format(n_pos/len(testSet)*100))
-    else:
-        print("Correct: {}%".format(n_neg/len(testSet)*100))
+
+pos_prec = n_pos_tp/(n_pos_tp + len(tn_reviews) - n_neg_tn)
+pos_rec = n_pos_tp/len(tp_reviews)
+pos_f1 = 2*((pos_prec*pos_rec)/(pos_prec+pos_rec))
+
+neg_prec = n_neg_tn/(n_neg_tn + len(tp_reviews) - n_pos_tp)
+neg_rec = n_neg_tn/len(tn_reviews)
+neg_f1 = 2*((neg_prec*neg_rec)/(neg_prec+neg_rec))
+
 print()
+print(" "*10 + "POSITIVE")
+print("Precision: {}".format(pos_prec))
+print("Recall: {}".format(pos_rec))
+print("F1-score: {}".format(pos_f1))
+print("_"*30)
+print(" "*10 + "NEGATIVE")
+print("Precision: {}".format(neg_prec))
+print("Recall: {}".format(neg_rec))
+print("F1-score: {}".format(neg_f1))

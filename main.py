@@ -1,4 +1,5 @@
 from bayes import Bayes
+from pathlib import Path, PurePath
 import preprocess as pp
 
 def print_menu():
@@ -45,11 +46,14 @@ while(True):
                 print("Please enter filepath")
             else:
                 path = path[1]
-                print(path)
+                path = PurePath(path)
                 text = ""
-                with open(path, 'r',encoding = 'utf-8') as f:
-                    text = f.read()
-                    print(text)
+                try:
+                    with open(path, 'r',encoding = 'utf-8') as f:
+                        text = f.read()
+                        print(text)
+                except OSError as e:
+                    print("File doesn't exist/Invalid path")
                 text = pp.clean_text(text)
                 pos,neg = classifier.test(text)
                 print("CLASS: ", end = '')

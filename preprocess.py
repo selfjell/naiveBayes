@@ -80,8 +80,7 @@ def clean_text(input_text, stop_words = stop_list, neg_stop = neg_stop):
 def txtToList(path):
     _list = []
     for file in path.glob('*.txt'):
-        p = path.joinpath(file)
-        with p.open("r", errors = "ignore", encoding = "utf-8") as f:
+        with file.open("r", errors = "ignore", encoding = "utf-8") as f:
             text = f.read()
             _list.append(text)
     return _list

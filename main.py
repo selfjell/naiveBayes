@@ -8,7 +8,7 @@ def print_menu():
     print("LOAD TRAINING:\t L")
     print("SAVE TRAINING:\t S")
     print("DISPLAY STATS:\t D")
-    print("CLASSIFY:\t C %FILEPATH%")
+    print("CLASSIFY:\t C %FILENAME%") #Should be in same directory
     print("REFRESH MENU:\t M")
     print("QUIT:\t\t Q")
 

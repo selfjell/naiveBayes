@@ -47,25 +47,25 @@ class Bayes():
         return sum_positive, sum_negative
 
     def save(self):
-        with open(PurePath('./pos_training.csv'), 'w', newline='', encoding = 'utf-8') as f:
+        with open(PurePath('pos_training.csv'), 'w', newline='', encoding = 'utf-8') as f:
             w = csv.writer(f, delimiter=':')
             w.writerows(self.pos_likelihood.items())
-        with open(PurePath('./neg_training.csv'), 'w', newline = '', encoding = 'utf-8') as f:
+        with open(PurePath('neg_training.csv'), 'w', newline = '', encoding = 'utf-8') as f:
             w = csv.writer(f, delimiter = ':')
             w.writerows(self.neg_likelihood.items())
-        with open(PurePath('./vocab.csv'), 'w', newline = '', encoding = 'utf-8') as f:
+        with open(PurePath('vocab.csv'), 'w', newline = '', encoding = 'utf-8') as f:
             w = csv.writer(f, delimiter = ':')
             w.writerows(self.vocabulary_freq.items())
-        with open(PurePath('./priors.txt'), 'w', newline = '', encoding = 'utf-8') as f:
+        with open(PurePath('priors.txt'), 'w', newline = '', encoding = 'utf-8') as f:
             f.write(str(self.pos_prior) + "\n")
             f.write(str(self.neg_prior) + "\n")
         print("DONE")
 
     def load(self):
-        self.pos_likelihood = self.load_dict(PurePath('./pos_training.csv'))
-        self.neg_likelihood = self.load_dict(PurePath('./neg_training.csv'))
-        self.vocabulary_freq = self.load_dict(PurePath('./vocab.csv'))
-        with open(PurePath('./priors.txt'), 'r', encoding = 'utf-8') as f:
+        self.pos_likelihood = self.load_dict(PurePath('pos_training.csv'))
+        self.neg_likelihood = self.load_dict(PurePath('neg_training.csv'))
+        self.vocabulary_freq = self.load_dict(PurePath('vocab.csv'))
+        with open(PurePath('priors.txt'), 'r', encoding = 'utf-8') as f:
             self.pos_prior = float(f.readline())
             self.neg_prior = float(f.readline())
             print("DONE")

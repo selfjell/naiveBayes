@@ -27,8 +27,8 @@ def getList(path):
 # Cleans a list of String-reviews to lower(), no duplicate words, and negation fix for sentiment analysis
 # Argument input_text = A list of String-reviews
 # Return input_text = The cleaned up list for sentiment analysis
-stop_list = getList(PurePath('./stopwords.txt'))
-neg_stop = getList(PurePath('./neg_stopwords.txt'))
+stop_list = getList('stopwords.txt')
+neg_stop = getList('neg_stopwords.txt')
 def clean_text(input_text, stop_words = stop_list, neg_stop = neg_stop):
 
     # String to lowercase letters and removes the <br /> thing
@@ -88,7 +88,7 @@ def txtToList(path):
     return _list
 
 def save_stats(scores):
-    path = PurePath("./stats.txt")
+    path = PurePath("stats.txt")
     with open(path, "w", newline = '\n') as f:
         for score in scores:
             f.write(str(score) + "\n")

@@ -46,7 +46,7 @@ while(True):
                 print("Please enter filepath")
             else:
                 path = path[1]
-                path = PurePath(path)
+                path = PurePath('.', path)
                 text = ""
                 try:
                     with open(path, 'r',encoding = 'utf-8') as f:

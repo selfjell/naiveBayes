@@ -16,7 +16,6 @@ def isNegationWord(word):
 
 def getList(path):
     _input = []
-    path = PurePath(path)
     with open (path, 'r', errors="ignore", encoding='utf-8') as f:
         _input = f.read().splitlines()
         #print(_input)
@@ -27,8 +26,8 @@ def getList(path):
 # Cleans a list of String-reviews to lower(), no duplicate words, and negation fix for sentiment analysis
 # Argument input_text = A list of String-reviews
 # Return input_text = The cleaned up list for sentiment analysis
-stop_list = getList('stopwords.txt')
-neg_stop = getList('neg_stopwords.txt')
+stop_list = getList(PurePath('.','stopwords.txt'))
+neg_stop = getList(PurePath('.', 'neg_stopwords.txt'))
 def clean_text(input_text, stop_words = stop_list, neg_stop = neg_stop):
 
     # String to lowercase letters and removes the <br /> thing
@@ -88,7 +87,7 @@ def txtToList(path):
     return _list
 
 def save_stats(scores):
-    path = PurePath("stats.txt")
+    path = PurePath(".","stats.txt")
     with open(path, "w", newline = '\n') as f:
         for score in scores:
             f.write(str(score) + "\n")
@@ -97,7 +96,7 @@ def save_stats(scores):
 def load_stats():
     _input = []
     try:
-        path = PurePath("./stats.txt")
+        path = PurePath(".", "stats.txt")
         with open(path, "r", encoding = "utf-8") as f:
             _input = f.readlines()
     except OSError as e:
@@ -108,10 +107,10 @@ def load_stats():
 def main():
     #Making list of .txt-files (per sentiment)
     print("\tLOADING FILES")
-    tp_reviews = txtToList(PurePath("./Data/test/pos"))
-    tn_reviews = txtToList(PurePath("./Data/test/neg"))
-    pos_reviews = txtToList(PurePath("./Data/train/pos"))
-    neg_reviews = txtToList(PurePath("./Data/train/neg"))
+    tp_reviews = txtToList(PurePath(".", "Data", "test", "pos"))
+    tn_reviews = txtToList(PurePath(".", "Data", "test", "neg"))
+    pos_reviews = txtToList(PurePath(".", "Data", "train", "pos"))
+    neg_reviews = txtToList(PurePath(".", "Data", "train", "neg"))
     print("\tFILES LOADED")
     #Cleaning reviews
     reviews = [pos_reviews, neg_reviews, tp_reviews, tn_reviews]

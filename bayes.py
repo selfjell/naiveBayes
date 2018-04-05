@@ -62,10 +62,10 @@ class Bayes():
         print("DONE")
 
     def load(self):
-        self.pos_likelihood = self.load_dict(PurePath('pos_training.csv'))
-        self.neg_likelihood = self.load_dict(PurePath('neg_training.csv'))
-        self.vocabulary_freq = self.load_dict(PurePath('vocab.csv'))
-        with open(PurePath('priors.txt'), 'r', encoding = 'utf-8') as f:
+        self.pos_likelihood = self.load_dict(PurePath('.', 'pos_training.csv'))
+        self.neg_likelihood = self.load_dict(PurePath('.', 'neg_training.csv'))
+        self.vocabulary_freq = self.load_dict(PurePath('.', 'vocab.csv'))
+        with open(PurePath('.', 'priors.txt'), 'r', encoding = 'utf-8') as f:
             self.pos_prior = float(f.readline())
             self.neg_prior = float(f.readline())
             print("DONE")

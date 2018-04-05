@@ -55,7 +55,9 @@ while(True):
                 text = pp.clean_text(text)
                 pos,neg = classifier.test(text)
                 print("CLASS: ", end = '')
-                if pos >= neg:
+                if pos == 0 or neg == 0:
+                    print("SOMETHING WENT WRONG")
+                elif pos >= neg:
                     print("POSITIVE")
                 else:
                     print("NEGATIVE")

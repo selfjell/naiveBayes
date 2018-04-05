@@ -1,5 +1,5 @@
 from bayes import Bayes
-from pathlib import Path, PurePath
+from pathlib import Path
 import preprocess as pp
 
 def print_menu():
@@ -46,12 +46,10 @@ while(True):
                 print("Please enter filepath")
             else:
                 path = path[1]
-                path = PurePath('.', path)
+                path = Path('.').joinpath(path)
                 text = ""
                 try:
-                    with open(path, 'r',encoding = 'utf-8') as f:
-                        text = f.read()
-                        print(text)
+                    text = path.open('r',encoding = 'utf-8').read()
                 except OSError as e:
                     print("File doesn't exist/Invalid path")
                 text = pp.clean_text(text)

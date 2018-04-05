@@ -1,6 +1,6 @@
 from collections import Counter
 import numpy as np
-from pathlib import PurePath
+from pathlib import Path
 import csv
 
 class Bayes():
@@ -47,25 +47,26 @@ class Bayes():
         return sum_positive, sum_negative
 
     def save(self):
-        with open(PurePath('pos_training.csv'), 'w', newline='', encoding = 'utf-8') as f:
+        path = Path('.')
+        with path.joinpath('pos_training.csv').open('w', newline='', encoding = 'utf-8') as f:
             w = csv.writer(f, delimiter=':')
             w.writerows(self.pos_likelihood.items())
-        with open(PurePath('neg_training.csv'), 'w', newline = '', encoding = 'utf-8') as f:
+        with path.joinpath('neg_training.csv').open('w', newline = '', encoding = 'utf-8') as f:
             w = csv.writer(f, delimiter = ':')
             w.writerows(self.neg_likelihood.items())
-        with open(PurePath('vocab.csv'), 'w', newline = '', encoding = 'utf-8') as f:
+        with path.joinpath('vocab.csv').open('w', newline = '', encoding = 'utf-8') as f:
             w = csv.writer(f, delimiter = ':')
             w.writerows(self.vocabulary_freq.items())
-        with open(PurePath('priors.txt'), 'w', newline = '', encoding = 'utf-8') as f:
+        with path.joinpath('priors.txt').open('w', newline = '', encoding = 'utf-8') as f:
             f.write(str(self.pos_prior) + "\n")
             f.write(str(self.neg_prior) + "\n")
         print("DONE")
 
     def load(self):
-        self.pos_likelihood = self.load_dict(PurePath('.', 'pos_training.csv'))
-        self.neg_likelihood = self.load_dict(PurePath('.', 'neg_training.csv'))
-        self.vocabulary_freq = self.load_dict(PurePath('.', 'vocab.csv'))
-        with open(PurePath('.', 'priors.txt'), 'r', encoding = 'utf-8') as f:
+        self.pos_likelihood = self.load_dict(Path('.').joinpath('pos_training.csv'))
+        self.neg_likelihood = self.load_dict(Path('.').joinpath('neg_training.csv'))
+        self.vocabulary_freq = self.load_dict(Path('.').joinpath('vocab.csv'))
+        with Path('.').joinpath('priors.txt').open('r', encoding = 'utf-8') as f:
             self.pos_prior = float(f.readline())
             self.neg_prior = float(f.readline())
             print("DONE")
@@ -73,7 +74,7 @@ class Bayes():
     # Loads a dictionary from a csv-file
     def load_dict(self, filePath):
         _input = Counter()
-        with open (filePath, 'r', errors="ignore", encoding='utf-8') as f:
+        with filePath.open('r', errors="ignore", encoding='utf-8') as f:
             r = csv.reader(f, delimiter=':')
             for row in r:
                 _input[row[0]] = float(row[1])

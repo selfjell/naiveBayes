@@ -1,7 +1,7 @@
 from collections import Counter
 import numpy as np
 import os
-from pathlib import PurePath
+from pathlib import Path
 from bayes import Bayes
 
 def isEndOfSentence(word):
@@ -16,9 +16,9 @@ def isNegationWord(word):
 
 def getList(path):
     _input = []
-    with open (path, 'r', errors="ignore", encoding='utf-8') as f:
+    with path.open('r', errors="ignore", encoding='utf-8') as f:
         _input = f.read().splitlines()
-        #print(_input)
+    #print(_input)
     return _input
 
 #dir_ = Path('.')
@@ -26,8 +26,8 @@ def getList(path):
 # Cleans a list of String-reviews to lower(), no duplicate words, and negation fix for sentiment analysis
 # Argument input_text = A list of String-reviews
 # Return input_text = The cleaned up list for sentiment analysis
-stop_list = getList(PurePath('.','stopwords.txt'))
-neg_stop = getList(PurePath('.', 'neg_stopwords.txt'))
+stop_list = getList(Path('.').joinpath('stopwords.txt'))
+neg_stop = getList(Path('.').joinpath('neg_stopwords.txt'))
 def clean_text(input_text, stop_words = stop_list, neg_stop = neg_stop):
 
     # String to lowercase letters and removes the <br /> thing
@@ -79,16 +79,17 @@ def clean_text(input_text, stop_words = stop_list, neg_stop = neg_stop):
 
 def txtToList(path):
     _list = []
-    for file in os.listdir(path):
-        p = os.path.join(path, file)
-        with open(p, "r", errors = "ignore", encoding = "utf-8") as f:
+    for file in path.glob('*.txt'):
+        p = path.joinpath(file)
+        with p.open("r", errors = "ignore", encoding = "utf-8") as f:
             text = f.read()
             _list.append(text)
     return _list
 
 def save_stats(scores):
-    path = PurePath(".","stats.txt")
-    with open(path, "w", newline = '\n') as f:
+    path = Path(".").joinpath("stats.txt")
+    path.touch(exist_ok = True)
+    with path.open("w", newline = '\n') as f:
         for score in scores:
             f.write(str(score) + "\n")
 
@@ -96,9 +97,8 @@ def save_stats(scores):
 def load_stats():
     _input = []
     try:
-        path = PurePath(".", "stats.txt")
-        with open(path, "r", encoding = "utf-8") as f:
-            _input = f.readlines()
+        path = Path(".").joinpath("stats.txt")
+        _input = path.open("r", encoding = "utf-8").readlines()
     except OSError as e:
         print("No stats saved, classifier must be trained first")
         print(e.message())
@@ -107,11 +107,17 @@ def load_stats():
 def main():
     #Making list of .txt-files (per sentiment)
     print("\tLOADING FILES")
-    tp_reviews = txtToList(PurePath(".", "Data", "test", "pos"))
-    tn_reviews = txtToList(PurePath(".", "Data", "test", "neg"))
-    pos_reviews = txtToList(PurePath(".", "Data", "train", "pos"))
-    neg_reviews = txtToList(PurePath(".", "Data", "train", "neg"))
+
+    path = Path('.').joinpath('Data')
+    test_ = path.joinpath('test')
+    train = path.joinpath('train')
+
+    tp_reviews = txtToList(test_.joinpath('pos'))
+    tn_reviews = txtToList(test_.joinpath("neg"))
+    pos_reviews = txtToList(train.joinpath("pos"))
+    neg_reviews = txtToList(train.joinpath("neg"))
     print("\tFILES LOADED")
+
     #Cleaning reviews
     reviews = [pos_reviews, neg_reviews, tp_reviews, tn_reviews]
     print("\tCLEANING REVIEWS")

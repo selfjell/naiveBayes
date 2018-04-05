@@ -47,7 +47,7 @@ class Bayes():
         return sum_positive, sum_negative
 
     def save(self):
-        path = Path('.')
+        path = Path('.').joinpath('Saves')
         with path.joinpath('pos_training.csv').open('w', newline='', encoding = 'utf-8') as f:
             w = csv.writer(f, delimiter=':')
             w.writerows(self.pos_likelihood.items())
@@ -63,10 +63,11 @@ class Bayes():
         print("DONE")
 
     def load(self):
-        self.pos_likelihood = self.load_dict(Path('.').joinpath('pos_training.csv'))
-        self.neg_likelihood = self.load_dict(Path('.').joinpath('neg_training.csv'))
-        self.vocabulary_freq = self.load_dict(Path('.').joinpath('vocab.csv'))
-        with Path('.').joinpath('priors.txt').open('r', encoding = 'utf-8') as f:
+        path = Path('.').joinpath('Saves')
+        self.pos_likelihood = self.load_dict(path.joinpath('pos_training.csv'))
+        self.neg_likelihood = self.load_dict(path.joinpath('neg_training.csv'))
+        self.vocabulary_freq = self.load_dict(path.joinpath('vocab.csv'))
+        with path.joinpath('priors.txt').open('r', encoding = 'utf-8') as f:
             self.pos_prior = float(f.readline())
             self.neg_prior = float(f.readline())
             print("DONE")

@@ -52,6 +52,7 @@ while(True):
                     text = path.open('r',encoding = 'utf-8').read()
                 except OSError as e:
                     print("File doesn't exist/Invalid path")
+                print(text)
                 text = pp.clean_text(text)
                 pos,neg = classifier.test(text)
                 print("CLASS: ", end = '')

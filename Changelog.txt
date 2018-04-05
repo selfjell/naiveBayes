@@ -1,5 +1,0 @@
-Changelog:
-Merged clean_text and heisann.py
-Stopped removing duplicates
-Removed double preprocessing
-Added saving and loading to/from csv-file

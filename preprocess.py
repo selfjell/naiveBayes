@@ -21,13 +21,13 @@ def getList(path):
     #print(_input)
     return _input
 
-#dir_ = Path('.')
+
 
 # Cleans a list of String-reviews to lower(), no duplicate words, and negation fix for sentiment analysis
 # Argument input_text = A list of String-reviews
 # Return input_text = The cleaned up list for sentiment analysis
-stop_list = getList(Path('.').joinpath('stopwords.txt'))
-neg_stop = getList(Path('.').joinpath('neg_stopwords.txt'))
+stop_list = getList(Path('.').joinpath('Etc').joinpath('stopwords.txt'))
+neg_stop = getList(Path('.').joinpath('Etc').joinpath('neg_stopwords.txt'))
 def clean_text(input_text, stop_words = stop_list, neg_stop = neg_stop):
 
     # String to lowercase letters and removes the <br /> thing
@@ -86,7 +86,7 @@ def txtToList(path):
     return _list
 
 def save_stats(scores):
-    path = Path(".").joinpath("stats.txt")
+    path = Path(".").joinpath("Saves").joinpath("stats.txt")
     path.touch(exist_ok = True)
     with path.open("w", newline = '\n') as f:
         for score in scores:
@@ -96,7 +96,7 @@ def save_stats(scores):
 def load_stats():
     _input = []
     try:
-        path = Path(".").joinpath("stats.txt")
+        path = Path(".").joinpath("Saves").joinpath("stats.txt")
         _input = path.open("r", encoding = "utf-8").readlines()
     except OSError as e:
         print("No stats saved, classifier must be trained first")
@@ -107,7 +107,7 @@ def main():
     #Making list of .txt-files (per sentiment)
     print("\tLOADING FILES")
 
-    path = Path('.').joinpath('Data')
+    path = Path('..').joinpath('Data')
     test_ = path.joinpath('test')
     train = path.joinpath('train')
 

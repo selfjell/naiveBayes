@@ -135,7 +135,7 @@ def main():
             del negCounter[term]
 
 
-    classifier = Bayes(vocabCounter)
+    classifier = Bayes(vocab_counts = vocabCounter)
     classifier.train(posCounter, negCounter)
 
     testSets = [tp_reviews, tn_reviews]
@@ -180,13 +180,13 @@ def main():
     return classifier
 
 def print_stats(scores):
-    print()
+    print("_"*35)
     print(" "*10 + "POSITIVE")
-    print("Precision: {}".format(scores[0]))
-    print("Recall: {}".format(scores[1]))
-    print("F1-score: {}".format(scores[2]))
-    print("_"*30)
+    print("Precision:\t {}".format(scores[0]))
+    print("Recall:\t\t {}".format(scores[1]))
+    print("F1-score:\t {}".format(scores[2]))
+    print("_"*35)
     print(" "*10 + "NEGATIVE")
-    print("Precision: {}".format(scores[3]))
-    print("Recall: {}".format(scores[4]))
-    print("F1-score: {}".format(scores[5]))
+    print("Precision:\t {}".format(scores[3]))
+    print("Recall:\t\t {}".format(scores[4]))
+    print("F1-score:\t {}".format(scores[5]))

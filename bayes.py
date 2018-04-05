@@ -1,21 +1,19 @@
+from collections import Counter
 import numpy as np
 import csv
 
 class Bayes():
-    def __init__(self, vocab_counts, n_doc=25000, n_pos_doc=12500, n_neg_doc=12500):
-        self.vocabulary_freq = vocab_counts
-
-        self.pos_prior = np.log(n_pos_doc/float(n_doc))
-        self.neg_prior = np.log(n_neg_doc/float(n_doc))
-        #self.pos_prior, self.neg_prior = 0.5, 0.5
-
+    def __init__(self, vocab_counts = 0, trained = False, n_doc=25000, n_pos_doc=12500, n_neg_doc=12500):
         self.pos_likelihood = {}
         self.neg_likelihood = {}
+        if not trained:
+            self.vocabulary_freq = vocab_counts
 
-    def __init__(self, n_doc=25000, n_pos_doc=12500, n_neg_doc=12500):
-        self.pos_likelihood = {}
-        self.neg_likelihood = {}
-        self.load()
+            self.pos_prior = np.log(n_pos_doc/float(n_doc))
+            self.neg_prior = np.log(n_neg_doc/float(n_doc))
+        else:
+            self.load()
+
 
     def train(self, positive_freq, negative_freq):
         pos_vocab_wcount = sum([positive_freq[word]+1 for word, count in list(self.vocabulary_freq.most_common()) if positive_freq[word] != None])
@@ -48,31 +46,31 @@ class Bayes():
         return sum_positive, sum_negative
 
     def save(self):
-        with open('./pos_training.csv', 'w', newline='') as f:
+        with open('./pos_training.csv', 'w', newline='', encoding = 'utf-8') as f:
             w = csv.writer(f, delimiter=':')
             w.writerows(self.pos_likelihood.items())
-        with open('./neg_training.csv', 'w', newline = '') as f:
+        with open('./neg_training.csv', 'w', newline = '', encoding = 'utf-8') as f:
             w = csv.writer(f, delimiter = ':')
             w.writerows(self.neg_likelihood.items())
-        with open('./vocab.csv', 'w', newline = '') as f:
+        with open('./vocab.csv', 'w', newline = '', encoding = 'utf-8') as f:
             w = csv.writer(f, delimiter = ':')
             w.writerows(self.vocabulary_freq.items())
-        with open('./priors.txt', 'w', newline = '') as f:
+        with open('./priors.txt', 'w', newline = '', encoding = 'utf-8') as f:
             f.write(str(self.pos_prior) + "\n")
             f.write(str(self.neg_prior) + "\n")
-
+        print("DONE")
 
     def load(self):
-        self.pos_likelihood = load_dict('./pos_training.csv')
-        self.neg_likelihood = load_dict('./neg_training.csv')
-        self.vocabulary_freq = load_dict('./vocab.csv')
+        self.pos_likelihood = self.load_dict('./pos_training.csv')
+        self.neg_likelihood = self.load_dict('./neg_training.csv')
+        self.vocabulary_freq = self.load_dict('./vocab.csv')
         with open('./priors.txt', 'r', encoding = 'utf-8') as f:
             self.pos_prior = float(f.readline())
             self.neg_prior = float(f.readline())
-
+            print("DONE")
 
     # Loads a dictionary from a csv-file
-    def loadDict(self, filePath):
+    def load_dict(self, filePath):
         _input = Counter()
         with open (filePath, 'r', errors="ignore", encoding='utf-8') as f:
             r = csv.reader(f, delimiter=':')

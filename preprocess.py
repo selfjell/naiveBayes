@@ -42,7 +42,15 @@ def clean_text(input_text, stop_words = stop_list, neg_stop = neg_stop):
 
     # Convert the the review in the form of a String into a list of words
     words = []
+
+    #Adding extra weight to words preceeded by "very"
+    for i in range(len(words)):
+        if words[i] == "very":
+            if words[i+1] != "very":
+                words.append(words[i+1])
+
     [words.append(x) for x in input_text.split(" ")]
+
 
     #Removing stopwords
     words = [word for word in words if not word in stop_words]
@@ -57,6 +65,7 @@ def clean_text(input_text, stop_words = stop_list, neg_stop = neg_stop):
         if isEndOfSentence(words[j]):
             words[j] = words[j].replace(words[j][-1], "")
             negation_word = ""
+
 
     #Removing negated stopwords
     words = [word for word in words if not word in neg_stop]
